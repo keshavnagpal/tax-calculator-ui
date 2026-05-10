@@ -1,0 +1,142 @@
+.calculator-container {
+  margin: 0 auto;
+  transition: all 0.5s ease-in-out;
+  width: 100%;
+  max-width: 420px; /* Optimal for a single card/form */
+}
+
+.calculator-container header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.calculator-container header h1 {
+  margin-bottom: 0;
+}
+.calculator-container header p {
+  margin-top: 0;
+  color: var(--pico-muted-color);
+}
+
+/* State when results are shown */
+.calculator-container.results-shown {
+  max-width: 720px; /* Wider to accommodate the table */
+}
+
+.calculator-container.results-shown header {
+  margin-bottom: 1rem;
+}
+
+.calculator-container.results-shown form {
+  display: none; /* Hide form when results are visible */
+}
+
+.results-card {
+  text-align: left;
+  margin-top: 1rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.results-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  text-align: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--pico-muted-border-color);
+  margin-bottom: 1rem;
+}
+
+.results-header > div {
+  flex: 1 1 150px;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+  border-radius: var(--pico-border-radius);
+  transition: background-color 0.3s ease;
+}
+
+.results-header > div.highlight {
+    background-color: var(--pico-hazy-background-color);
+}
+
+.results-header span {
+  font-size: 0.875em;
+  color: var(--pico-muted-color);
+}
+
+.results-header strong {
+  font-size: 1.1em;
+}
+
+.table-container {
+  overflow-x: auto;
+  padding: 0 1rem 1rem;
+}
+
+table {
+  margin-bottom: 1rem;
+}
+
+table th {
+  text-align: right;
+}
+table th:first-child {
+  text-align: left;
+}
+
+table td {
+  text-align: right;
+}
+table td:first-child {
+  text-align: left;
+}
+
+.group-header td {
+  font-weight: bold;
+  background-color: var(--pico-muted-background-color);
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.bold-row td {
+  font-weight: bold;
+}
+
+.highlight-row td {
+  background-color: var(--pico-hazy-background-color);
+}
+
+.spacer td {
+  padding: 0.5rem;
+  background-color: var(--pico-background-color);
+}
+
+.high-income-note {
+  text-align: center;
+  padding: 0 1rem 1rem;
+  color: var(--pico-muted-color);
+}
+
+.results-card > .secondary {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+@media (max-width: 500px) {
+    .table-container {
+        padding: 0 0.5rem 0.5rem;
+    }
+    table {
+        font-size: 0.875rem;
+    }
+    table th, table td {
+        padding: 0.5rem 0.25rem;
+    }
+}
