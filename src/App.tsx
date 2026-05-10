@@ -1,6 +1,25 @@
-import { useState, type ChangeEvent } from 'react';
+import { useState, useEffect, type ChangeEvent } from 'react';
 import * as TaxUtils from './taxUtils';
 import './index.css';
+
+const ThemeToggle = () => {
+    const [theme, setTheme] = useState(document.documentElement.getAttribute('data-theme') || 'light');
+
+    useEffect(() => {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+
+    return (
+        <button
+            className="theme-toggle"
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            aria-label="Toggle theme"
+        >
+            {theme === 'light' ? '🌙' : '☀️'}
+        </button>
+    );
+};
 
 export default function App() {
     const [income, setIncome] = useState<number | ''>('');
@@ -41,9 +60,11 @@ export default function App() {
 
     return (
         <main className="container">
+            <ThemeToggle />
             <div className={`calculator-container ${showResults ? 'results-shown' : ''}`}>
                 <header>
                     <h1>Income Calculator</h1>
+                    <p>Compare Old vs New Tax Regime</p>
                 </header>
 
                 <form onSubmit={handleSubmit}>
@@ -76,7 +97,7 @@ export default function App() {
                                 checked={includePf}
                                 onChange={e => setIncludePf(e.target.checked)}
                             />
-                            Include Provident Fund
+                            Include Provident Fund (12%)
                         </label>
                     </fieldset>
                     <button type="submit">Calculate</button>
@@ -103,7 +124,7 @@ export default function App() {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th></th>
+                                        <th>Component</th>
                                         <th>Old Regime</th>
                                         <th>New Regime</th>
                                     </tr>
@@ -114,37 +135,38 @@ export default function App() {
                                     </tr>
                                     <ResultRow label="Net Annual Income" oldResult={results.ctx.gross_annual - results.old.total_tax} newResult={results.ctx.gross_annual - results.new.total_tax} isBold />
                                     <ResultRow label="Monthly In-Hand" oldResult={results.old.monthly_in_hand} newResult={results.new.monthly_in_hand} isBold />
-                                    <ResultRow label="Monthly PF" oldResult={results.old.monthly_pf} newResult={results.new.monthly_pf} />
+                                    <ResultRow label="Monthly PF (Employee)" oldResult={results.old.monthly_pf} newResult={results.new.monthly_pf} />
                                     <ResultRow label="Monthly Total" oldResult={results.old.monthly_total} newResult={results.new.monthly_total} isBold />
-                                    <tr className="spacer"><td colSpan={3}></td></tr>
+
                                     <tr className="group-header">
                                         <td colSpan={3}>Exemptions & Deductions</td>
                                     </tr>
                                     <ResultRow label="HRA Exemption" oldResult={results.old.hra_exemption} newResult={results.new.hra_exemption} />
                                     <ResultRow label="Section 80C" oldResult={results.old.c80_deduction} newResult={results.new.c80_deduction} />
-                                    <ResultRow label="Section 80D" oldResult={TaxUtils.SECTION_80D_LIMIT} newResult={0} />
+                                    <ResultRow label="Section 80D (Health Ins)" oldResult={TaxUtils.SECTION_80D_LIMIT} newResult={0} />
                                     <ResultRow label="Standard Deduction" oldResult={results.old.standard_deduction} newResult={results.new.standard_deduction} />
-                                    <ResultRow label="Employer PF" oldResult={results.old.pf_employer} newResult={results.new.pf_employer} />
+                                    <ResultRow label="Employer PF Contribution" oldResult={results.old.pf_employer} newResult={results.new.pf_employer} />
                                     <ResultRow label="Total Deductions" oldResult={results.old.total_deductions} newResult={results.new.total_deductions} isBold />
-
-                                    <tr className="spacer"><td colSpan={3}></td></tr>
-                                    <ResultRow label="Taxable Income" oldResult={results.old.taxable_income} newResult={results.new.taxable_income} isBold />
-                                    <tr className="spacer"><td colSpan={3}></td></tr>
 
                                     <tr className="group-header">
                                         <td colSpan={3}>Tax Calculation</td>
                                     </tr>
+                                    <ResultRow label="Taxable Income" oldResult={results.old.taxable_income} newResult={results.new.taxable_income} isBold />
                                     <ResultRow label="Income Tax" oldResult={results.old.income_tax} newResult={results.new.income_tax} />
                                     <ResultRow label="Surcharge" oldResult={results.old.surcharge} newResult={results.new.surcharge} />
                                     <ResultRow label="Health & Edu Cess" oldResult={results.old.cess} newResult={results.new.cess} />
-                                    <ResultRow label="Total Annual Tax" oldResult={results.old.total_tax} newResult={results.new.total_tax} isBold />
+                                    <ResultRow label="Total Annual Tax" oldResult={results.old.total_tax} newResult={results.new.total_tax} isBold highlight />
                                 </tbody>
                             </table>
                         </div>
                         {results.ctx.gross_annual > 10_000_000 && (
-                            <p className="high-income-note"><strong>Note:</strong> Your income is high. It is advisable to consult a CA for detailed tax planning.</p>
+                            <p className="high-income-note" style={{ textAlign: 'center', padding: '1rem', color: 'var(--pico-muted-color)', fontSize: '0.9rem' }}>
+                                <strong>Note:</strong> Your income is high. It is advisable to consult a tax professional for detailed planning.
+                            </p>
                         )}
-                        <button className="secondary" onClick={handleReset}>Reset</button>
+                        <div style={{ padding: '0 1.5rem 1.5rem' }}>
+                            <button className="secondary" onClick={handleReset} style={{ width: '100%' }}>Reset</button>
+                        </div>
                     </article>
                 )}
             </div>
@@ -159,3 +181,4 @@ const ResultRow = ({ label, oldResult, newResult, isBold = false, highlight = fa
         <td>{TaxUtils.formatNumber(newResult)}</td>
     </tr>
 );
+
