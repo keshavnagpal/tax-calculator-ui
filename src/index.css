@@ -1,3 +1,16 @@
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  place-items: center;
+  justify-content: center;
+}
+
+main {
+  width: 100%;
+  padding: 1rem;
+}
+
 .calculator-container {
   margin: 0 auto;
   transition: all 0.5s ease-in-out;
@@ -13,6 +26,7 @@
 .calculator-container header h1 {
   margin-bottom: 0;
 }
+
 .calculator-container header p {
   margin-top: 0;
   color: var(--pico-muted-color);
